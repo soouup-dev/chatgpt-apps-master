@@ -40,7 +40,9 @@ export default {
 				}
 			});
 
-		await env.FLASHCARDS_KV.put("hello", "world");
+		await env.FLASHCARDS_KV.put('hello', '{ "hello": "world"}');
+
+		await env.FLASHCARDS_KV.get('hello', "json");
 
 		// create deck
 
