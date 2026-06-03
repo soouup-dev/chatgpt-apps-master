@@ -7,7 +7,6 @@ const WIDGET_URI = "ui://flashcards-widget";
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		const API_KEY = env.API_KEY;
 		const server = new McpServer({
 			name: "Flashcard Server",
 			version: "1.0",
