@@ -7,6 +7,7 @@ import { DeckList } from "./components/deck-list";
 
 function App() {
   const [toolOutput, setToolOutput] = useState<ToolOutput | null>(null);
+  const [viewUUID, setViewUUID] = useState<string | null>(null);
 
   const { app, error } = useApp({
     appInfo: { name: "Flashcards Client", version: "1.0" },
@@ -15,6 +16,9 @@ function App() {
       app.ontoolresult = (result) => {
         if (result.structuredContent) {
           setToolOutput(result.structuredContent as unknown as ToolOutput);
+        }
+        if (result._meta) {
+          setViewUUID(result._meta.viewUUID as unknown as string);
         }
       };
     }
@@ -39,6 +43,7 @@ function App() {
       <FlashcardStudy
         deck={toolOutput.deck}
         app={app}
+        viewUUID={viewUUID}
         username={"username" in toolOutput ? toolOutput.username : "anonymous"}
       />
     );

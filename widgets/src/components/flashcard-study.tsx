@@ -9,12 +9,14 @@ interface FlashcardStudyProps {
   deck: Deck;
   app: App | null;
   username: string;
+  viewUUID: string | null;
 }
 
 export function FlashcardStudy({
   deck,
   app,
   username,
+  viewUUID
 }: FlashcardStudyProps) {
   const {
     cards,
@@ -29,7 +31,7 @@ export function FlashcardStudy({
     markCard,
     explainCard,
     resetProgress,
-  } = useStudySession({ deck, app, username });
+  } = useStudySession({ deck, app, username, viewUUID });
 
   if (!currentCard) {
     return (
