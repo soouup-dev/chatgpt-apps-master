@@ -18,13 +18,18 @@
 		"directory": "dist",
 		"binding": "ASSETS",
 	},
-	"kv_namespaces": [
+	"d1_databases": [
 		{
-			"binding": "FLASHCARDS_KV",
-			"id": "53e7d3398c84454893e9f1737eda1954",
-			"remote": true
-		}
-	]
+			"binding": "DB",
+			"database_name": "workouts_database",
+			"database_id": "7f5ab856-8031-489a-848f-d7097732f42b",
+			"remote": true,
+			"migrations_dir": "drizzle",
+		},
+	],
+	"ai": {
+		"binding": "AI",
+	},
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

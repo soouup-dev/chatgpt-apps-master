@@ -1,5 +1,11 @@
 {
 	"files.associations": {
 		"wrangler.json": "jsonc"
-	}
+	},
+	"typescript.suggest.autoImports": true,
+	"javascript.suggest.autoImports": true,
+	"typescript.preferences.includePackageJsonAutoImports": "on",
+	"javascript.preferences.includePackageJsonAutoImports": "on",
+	"editor.suggest.showStatusBar": true,
+	"editor.suggest.showWords": false
 }
