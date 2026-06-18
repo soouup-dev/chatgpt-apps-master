@@ -15,6 +15,7 @@ function App() {
   const [toolOutput, setToolOutput] = useState<ToolOutput | null>(null);
   const [showSession, setShowSession] = useState(false);
   const [displayMode, setDisplayMode] = useState<McpUiDisplayMode>("inline");
+  const [safeArea, setSafeArea] = useState({ top: 24, left: 24, bottom: 24, right: 24 });
 
   const { app } = useApp({
     appInfo: { name: "EMOM Workout App", version: "1.0" },
@@ -23,6 +24,9 @@ function App() {
       app.onhostcontextchanged = (ctx) => {
         if (ctx.displayMode) {
           setDisplayMode(ctx.displayMode);
+        }
+        if (ctx.safeAreaInsets) {
+          setSafeArea(ctx.safeAreaInsets);
         }
       };
 
@@ -53,6 +57,7 @@ function App() {
           onClose={() => setShowSession(false)}
           app={app}
           displayMode={displayMode}
+          safeArea={safeArea}
         />
       );
     }

@@ -17,12 +17,14 @@ export function WorkoutSession({
   workout,
   onClose,
   app,
-  displayMode
+  displayMode,
+  safeArea
 }: {
   workout: Workout;
   onClose: () => void;
   app: App | null;
   displayMode: McpUiDisplayMode;
+  safeArea: { top: number, left: number, bottom: number, right: number };
 }) {
   const totalRounds = Math.floor(
     (workout.durationMinutes * 60) / workout.intervalSeconds,
@@ -161,7 +163,12 @@ export function WorkoutSession({
   const progressPercent = ((currentRound - 1) / totalRounds) * 100;
 
   return (
-    <div className="flex flex-col h-screen bg-surface p-6">
+    <div className="flex flex-col h-screen bg-surface" style={{
+      paddingTop: safeArea.top || 24,
+      paddingLeft: safeArea.left || 24,
+      paddingBottom: safeArea.bottom || 24,
+      paddingRight: safeArea.right || 24,
+    }}>
       {/* Progress bar */}
       <div
         className="h-2 rounded-full overflow-hidden mb-6"
