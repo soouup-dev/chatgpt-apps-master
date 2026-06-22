@@ -21,15 +21,19 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "workouts_database",
-			"database_id": "7f5ab856-8031-489a-848f-d7097732f42b",
+			"database_name": "ecommerce_database",
+			"database_id": "4e89bc74-8141-4bf5-a5cd-f3c2907abbd3",
 			"remote": true,
 			"migrations_dir": "drizzle",
 		},
 	],
-	"ai": {
-		"binding": "AI",
-	},
+	"kv_namespaces": [
+		{
+			"binding": "OAUTH_KV",
+			"id": "7fc90f73fae3443fa3009bf8ba852bd9",
+			"remote": true
+		}
+	],
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
