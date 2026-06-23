@@ -1,7 +1,7 @@
-import type { App } from '@modelcontextprotocol/ext-apps';
-import type { View } from '../App';
-import type { Order } from '../types';
-import { useFormatPrice } from '../hooks/useFormatPrice';
+import type { App } from "@modelcontextprotocol/ext-apps";
+import type { View } from "../App";
+import type { Order } from "../types";
+import { useFormatPrice } from "../hooks/useFormatPrice";
 
 type Props = {
   app: App | null;
@@ -13,6 +13,7 @@ export function CheckoutCompleteScreen({ app, lastOrder, onNavigate }: Props) {
   const formatPrice = useFormatPrice(app);
 
   const capabilities = app?.getHostCapabilities();
+
   const supportsFileDownload = "downloadFile" in (capabilities ?? {});
 
   const handleDownloadReceipt = async () => {
