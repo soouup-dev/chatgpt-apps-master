@@ -21,7 +21,7 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "ecommerce_database",
+			"database_name": "ecommerce-database",
 			"database_id": "4e89bc74-8141-4bf5-a5cd-f3c2907abbd3",
 			"remote": true,
 			"migrations_dir": "drizzle",

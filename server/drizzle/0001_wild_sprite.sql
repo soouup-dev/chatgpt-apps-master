@@ -1,1 +1,0 @@
-ALTER TABLE `workouts` ADD `user_id` text NOT NULL;
