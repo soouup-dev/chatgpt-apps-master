@@ -8,8 +8,16 @@ export function useAddToCart(app: App | null, productId: string, setCart: (items
   const addToCart = async () => {
     if (!app || isPending) return;
     setIsPending(true);
-    // TODO: Add to cart
-    void productId; void setCart;
+    const result = await app.callServerTool({
+      name: "modify-cart",
+      arguments: {
+        productId,
+        quantity: 1,
+      },
+    });
+    if (!result.isError) {
+      setCart(result.structuredContent?.cartItems as CartItem[]);
+    }
     setIsPending(false);
   };
 

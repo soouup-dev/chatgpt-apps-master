@@ -12,9 +12,24 @@ type Props = {
 export function CheckoutCompleteScreen({ app, lastOrder, onNavigate }: Props) {
   const formatPrice = useFormatPrice(app);
 
+  const capabilities = app?.getHostCapabilities();
+  const supportsFileDownload = "downloadFile" in (capabilities ?? {});
+
   const handleDownloadReceipt = async () => {
     if (!app || !lastOrder) return;
-    // TODO: Download receipt
+
+    await app.downloadFile({
+      contents: [
+        {
+          type: "resource",
+          resource: {
+            mimeType: "text/plain",
+            uri: `file:///receipt-${lastOrder.orderId}`,
+            text: `Order: ${lastOrder.orderId}\n\nTotal: ${lastOrder.total}\n\nItems:${JSON.stringify(lastOrder.cartItems)}`,
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -24,18 +39,21 @@ export function CheckoutCompleteScreen({ app, lastOrder, onNavigate }: Props) {
         <h2 className="text-xl mb-2">Order Confirmed</h2>
         {lastOrder && (
           <p className="text-white/60 mb-6">
-            Order #{lastOrder.orderId.slice(0, 8)} — {formatPrice(lastOrder.total)}
+            Order #{lastOrder.orderId.slice(0, 8)} —{" "}
+            {formatPrice(lastOrder.total)}
           </p>
         )}
         <div className="flex flex-col gap-3">
+          {supportsFileDownload && (
+            <button
+              onClick={handleDownloadReceipt}
+              className="px-6 py-3 rounded-full border border-white/10 bg-neutral-900 text-neutral-100 text-sm font-medium cursor-pointer hover:bg-neutral-800 transition-colors"
+            >
+              Download Receipt
+            </button>
+          )}
           <button
-            onClick={handleDownloadReceipt}
-            className="px-6 py-3 rounded-full border border-white/10 bg-neutral-900 text-neutral-100 text-sm font-medium cursor-pointer hover:bg-neutral-800 transition-colors"
-          >
-            Download Receipt
-          </button>
-          <button
-            onClick={() => onNavigate('products')}
+            onClick={() => onNavigate("products")}
             className="px-6 py-3 rounded-full border-none bg-neutral-100 text-neutral-950 text-sm font-medium cursor-pointer"
           >
             Continue Shopping

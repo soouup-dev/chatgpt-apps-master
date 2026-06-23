@@ -79,6 +79,20 @@ export default function App() {
     }
   }, [app]);
 
+  useEffect(() => {
+    if (!app) return;
+    const fetchCart = async () => {
+      const result = await app.callServerTool({
+        name: "view-cart",
+        arguments: {},
+      });
+      if (!result.isError) {
+        setCart(result.structuredContent?.cartItems as CartItem[]);
+      }
+    };
+    fetchCart();
+  }, [app]);
+
   if (!isConnected) {
     return (
       <div className="min-h-24 bg-black text-white/60 flex items-center justify-center">
