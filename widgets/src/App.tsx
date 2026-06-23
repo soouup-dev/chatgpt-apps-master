@@ -1,16 +1,25 @@
-import { useState, useCallback, useEffect } from 'react';
-import { applyDocumentTheme, applyHostStyleVariables, useApp } from '@modelcontextprotocol/ext-apps/react';
-import { LoadingIndicator } from '@openai/apps-sdk-ui/components/Indicator';
-import type { Product, CartItem, Order, Review } from './types';
-import { ProductsScreen } from './screens/ProductsScreen';
-import { ProductDetailScreen } from './screens/ProductDetailScreen';
-import { CartScreen } from './screens/CartScreen';
-import { CheckoutCompleteScreen } from './screens/CheckoutCompleteScreen';
+import { useState, useCallback, useEffect } from "react";
+import {
+  applyDocumentTheme,
+  applyHostStyleVariables,
+  useApp,
+} from "@modelcontextprotocol/ext-apps/react";
+import { LoadingIndicator } from "@openai/apps-sdk-ui/components/Indicator";
+import type { Product, CartItem, Order, Review } from "./types";
+import { ProductsScreen } from "./screens/ProductsScreen";
+import { ProductDetailScreen } from "./screens/ProductDetailScreen";
+import { CartScreen } from "./screens/CartScreen";
+import { CheckoutCompleteScreen } from "./screens/CheckoutCompleteScreen";
 
-export type View = 'loading' | 'products' | 'product' | 'cart' | 'checkout-complete';
+export type View =
+  | "loading"
+  | "products"
+  | "product"
+  | "cart"
+  | "checkout-complete";
 
 export default function App() {
-  const [view, setView] = useState<View>('loading');
+  const [view, setView] = useState<View>("loading");
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -29,28 +38,33 @@ export default function App() {
       };
     }) => {
       if (!structuredContent) return;
-      if ('product' in structuredContent) {
+      if ("product" in structuredContent) {
         setSelectedProduct(structuredContent.product!);
         if (structuredContent.reviews) {
           setReviews(structuredContent.reviews);
         }
-        setView('product');
-      } else if ('products' in structuredContent) {
+        setView("product");
+      } else if ("products" in structuredContent) {
         setProducts(structuredContent.products!);
-        setView('products');
-      } else if ('cartItems' in structuredContent) {
+        setView("products");
+      } else if ("cartItems" in structuredContent) {
         setCart(structuredContent.cartItems!);
-        setView('cart');
+        setView("cart");
       }
     },
     [],
   );
 
   const { app, isConnected } = useApp({
-    appInfo: { name: 'ecommerce-widget', version: '1.0.0' },
+    appInfo: { name: "ecommerce-widget", version: "1.0.0" },
     capabilities: {},
     onAppCreated: (app) => {
       app.ontoolresult = handleToolResult;
+      if ((window as any).openai?.toolOutput) {
+        handleToolResult({
+          structuredContent: (window as any).openai.toolOutput,
+        });
+      }
     },
   });
 
@@ -73,7 +87,7 @@ export default function App() {
     );
   }
 
-  if (view === 'product' && selectedProduct) {
+  if (view === "product" && selectedProduct) {
     return (
       <ProductDetailScreen
         app={app}
@@ -88,7 +102,7 @@ export default function App() {
     );
   }
 
-  if (view === 'cart') {
+  if (view === "cart") {
     return (
       <CartScreen
         app={app}
@@ -101,11 +115,17 @@ export default function App() {
     );
   }
 
-  if (view === 'checkout-complete') {
-    return <CheckoutCompleteScreen app={app} lastOrder={lastOrder} onNavigate={setView} />;
+  if (view === "checkout-complete") {
+    return (
+      <CheckoutCompleteScreen
+        app={app}
+        lastOrder={lastOrder}
+        onNavigate={setView}
+      />
+    );
   }
 
-  if (view === 'products') {
+  if (view === "products") {
     return (
       <ProductsScreen
         app={app}
@@ -114,7 +134,7 @@ export default function App() {
         setCart={setCart}
         onSelectProduct={(product) => {
           setSelectedProduct(product);
-          setView('product');
+          setView("product");
         }}
         onNavigate={setView}
       />
