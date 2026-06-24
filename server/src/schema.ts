@@ -38,7 +38,7 @@ export const reviews = sqliteTable(
     rating: integer().notNull(),
     text: text().notNull(),
     fileId: text('file_id').notNull(),
-    createdAt: integer('crated_at', { mode: 'timestamp' }).default(sql`(current_timestamp)`),
+    createdAt: integer('crated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
   },
   (table) => [check('rating_1_5', sql`${table.rating} BETWEEN 1 AND 5`), primaryKey({ columns: [table.productId, table.userId] })],
 );
