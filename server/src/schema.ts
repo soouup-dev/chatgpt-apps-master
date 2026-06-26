@@ -42,3 +42,32 @@ export const reviews = sqliteTable(
   },
   (table) => [check('rating_1_5', sql`${table.rating} BETWEEN 1 AND 5`), primaryKey({ columns: [table.productId, table.userId] })],
 );
+
+export const storyboardProjects = sqliteTable('storyboard_projects', {
+  id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text('user_id').notNull(),
+  clientName: text('client_name').notNull(),
+  projectName: text('project_name').notNull(),
+  requirements: text().notNull(),
+  duration: integer().notNull(),
+  mood: text().notNull(),
+  colorPalette: text('color_palette', { mode: 'json' }).$type<string[]>().notNull().default([]),
+  typography: text({ mode: 'json' }).$type<{ font: string; style: string }>().notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
+});
+
+export const storyboardScenes = sqliteTable('storyboard_scenes', {
+  id: text().primaryKey(),
+  projectId: text('project_id')
+    .notNull()
+    .references(() => storyboardProjects.id, { onDelete: 'cascade' }),
+  sceneNumber: integer('scene_number').notNull(),
+  startTime: integer('start_time').notNull(),
+  endTime: integer('end_time').notNull(),
+  description: text().notNull(),
+  cameraMovement: text('camera_movement').notNull(),
+  copyText: text('copy_text').notNull(),
+  bgColor: text('bg_color').notNull(),
+  transition: text().notNull(),
+  bgmDirection: text('bgm_direction').notNull(),
+});
