@@ -26,6 +26,13 @@
 			"remote": true,
 			"migrations_dir": "drizzle",
 		},
+		{
+			"binding": "STORYBOARD_DB",
+			"database_name": "storyboard-database",
+			"database_id": "5ada086a-62f2-4adc-9a65-53921ae03727",
+			"remote": true,
+			"migrations_dir": "drizzle",
+		},
 	],
 	"kv_namespaces": [
 		{
