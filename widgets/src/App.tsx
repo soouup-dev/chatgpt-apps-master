@@ -5,21 +5,30 @@ import {
   useApp,
 } from "@modelcontextprotocol/ext-apps/react";
 import { LoadingIndicator } from "@openai/apps-sdk-ui/components/Indicator";
-import type { Product, CartItem, Order, Review } from "./types";
+import type { Product, CartItem, Order, Review, StoryboardScene, StoryboardProject } from "./types";
 import { ProductsScreen } from "./screens/ProductsScreen";
 import { ProductDetailScreen } from "./screens/ProductDetailScreen";
 import { CartScreen } from "./screens/CartScreen";
 import { CheckoutCompleteScreen } from "./screens/CheckoutCompleteScreen";
+import { ProjectsScreen } from "./screens/ProjectsScreen";
+import { StoryboardScreen } from "./screens/StoryboardScreen";
 
 export type View =
   | "loading"
   | "products"
   | "product"
   | "cart"
-  | "checkout-complete";
+  | "checkout-complete"
+  | "storyboard-projects"
+  | "storyboard";
 
 export default function App() {
   const [view, setView] = useState<View>("loading");
+  const [storyboardProjects, setStoryboardProjects] = useState<StoryboardProject[]>([]);
+  const [selectedStoryboard, setSelectedStoryboard] = useState<{
+    project: StoryboardProject;
+    scenes: StoryboardScene[];
+  } | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -50,6 +59,15 @@ export default function App() {
       } else if ("cartItems" in structuredContent) {
         setCart(structuredContent.cartItems!);
         setView("cart");
+      } else if ("projects" in structuredContent) {
+        setStoryboardProjects(structuredContent.projects as StoryboardProject[]);
+        setView("storyboard-projects");
+      } else if ("project" in structuredContent && "scenes" in structuredContent) {
+        setSelectedStoryboard({
+          project: structuredContent.project as StoryboardProject,
+          scenes: structuredContent.scenes as StoryboardScene[],
+        });
+        setView("storyboard");
       }
     },
     [],
@@ -150,6 +168,30 @@ export default function App() {
           setSelectedProduct(product);
           setView("product");
         }}
+        onNavigate={setView}
+      />
+    );
+  }
+
+  if (view === "storyboard-projects") {
+    return (
+      <ProjectsScreen
+        app={app}
+        projects={storyboardProjects}
+        onSelectProject={(project, scenes) => {
+          setSelectedStoryboard({ project, scenes });
+          setView("storyboard");
+        }}
+      />
+    );
+  }
+
+  if (view === "storyboard" && selectedStoryboard) {
+    return (
+      <StoryboardScreen
+        app={app}
+        project={selectedStoryboard.project}
+        scenes={selectedStoryboard.scenes}
         onNavigate={setView}
       />
     );
