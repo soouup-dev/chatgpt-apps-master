@@ -70,4 +70,5 @@ export const storyboardScenes = sqliteTable('storyboard_scenes', {
   bgColor: text('bg_color').notNull(),
   transition: text().notNull(),
   bgmDirection: text('bgm_direction').notNull(),
+  imageUrl: text('image_url'),
 });

@@ -175,6 +175,7 @@ export async function updateStoryboardScene(
     bgColor: string;
     transition: string;
     bgmDirection: string;
+    imageUrl: string;
   }>
 ) {
   const db = getDb(d1);

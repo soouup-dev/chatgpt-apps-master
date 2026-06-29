@@ -61,4 +61,5 @@ export type StoryboardScene = {
   bgColor: string;
   transition: string;
   bgmDirection: string;
+  imageUrl: string | null;
 }

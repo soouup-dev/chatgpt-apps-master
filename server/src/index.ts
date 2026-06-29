@@ -110,6 +110,28 @@ const privateHandler = {
 
 				for (const scene of scenes) {
 					await createStoryboardScene(env.STORYBOARD_DB, projectId, scene);
+
+					// 씬 설명으로 이미지 생성
+					try {
+						const prompt = `cinematic video storyboard scene: ${scene.description}. Camera: ${scene.cameraMovement}. Mood: ${mood}. Style: elegant, high quality, film still.`;
+						const imageResponse = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', {
+							prompt,
+							num_steps: 4,
+						}) as { image: string };
+
+						// base64 → binary → R2 저장
+						const imageBuffer = Uint8Array.from(atob(imageResponse.image), c => c.charCodeAt(0));
+						const imageKey = `storyboard/${projectId}/scene_${scene.sceneNumber}.png`;
+						await env.BUCKET.put(imageKey, imageBuffer, {
+							httpMetadata: { contentType: 'image/png' },
+						});
+
+						const imageUrl = `${new URL(request.url).origin}/images/${imageKey}`;
+						await updateStoryboardScene(env.STORYBOARD_DB, `${projectId}_${scene.sceneNumber}`, { imageUrl });
+					} catch (e) {
+						// 이미지 생성 실패해도 스토리보드는 계속 진행
+						console.error('Image generation failed for scene', scene.sceneNumber, e);
+					}
 				}
 
 				const data = await getStoryboardById(env.STORYBOARD_DB, projectId);
@@ -249,6 +271,20 @@ const publicHandler = {
 				return handleAuthorizePost(request, env);
 			}
 		}
+
+		// R2 이미지 서빙
+		if (url.pathname.startsWith('/images/')) {
+			const key = url.pathname.slice('/images/'.length);
+			const object = await env.BUCKET.get(key);
+			if (!object) return new Response(null, { status: 404 });
+			return new Response(object.body, {
+				headers: {
+					'Content-Type': object.httpMetadata?.contentType ?? 'image/png',
+					'Cache-Control': 'public, max-age=31536000',
+				},
+			});
+		}
+
 		return new Response(null, { status: 404 });
 	},
 } satisfies ExportedHandler<Env>;

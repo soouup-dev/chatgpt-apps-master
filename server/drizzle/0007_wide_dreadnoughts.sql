@@ -1,0 +1,1 @@
+ALTER TABLE `storyboard_scenes` ADD `image_url` text;

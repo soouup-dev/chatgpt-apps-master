@@ -7,7 +7,15 @@ type Props = {
 export function SceneCard({ scene }: Props) {
   const sceneNum = String(scene.sceneNumber).padStart(2, '0');
   return (
-    <div className="flex gap-3 p-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+    <div className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
+      {scene.imageUrl && (
+        <img
+          src={scene.imageUrl}
+          alt={`Scene ${sceneNum}`}
+          className="w-full h-40 object-cover"
+        />
+      )}
+      <div className="flex gap-3 p-4">
       <div
         className="w-1 rounded-full flex-shrink-0"
         style={{ backgroundColor: scene.bgColor }}
@@ -32,6 +40,7 @@ export function SceneCard({ scene }: Props) {
         <p className="text-sm text-[var(--foreground-secondary)]">
           <span className="text-[var(--foreground-tertiary)]">BGM </span>{scene.bgmDirection}
         </p>
+      </div>
       </div>
     </div>
   );
