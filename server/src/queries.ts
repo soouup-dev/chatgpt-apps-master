@@ -112,7 +112,12 @@ export async function createStoryboardProject(
 ) {
   const db = getDb(d1);
   const id = crypto.randomUUID();
-  await db.insert(storyboardProjects).values({ id, ...data });
+  await db.insert(storyboardProjects).values({
+    id,
+    ...data,
+    colorPalette: JSON.stringify(data.colorPalette) as any,
+    typography: JSON.stringify(data.typography) as any,
+  });
   return id;
 }
 

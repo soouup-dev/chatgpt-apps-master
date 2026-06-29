@@ -37,9 +37,9 @@
 	"kv_namespaces": [
 		{
 			"binding": "OAUTH_KV",
-			"id": "7fc90f73fae3443fa3009bf8ba852bd9",
+			"id": "cee69e3667044861a0ed6e88e5b8a924",
 			"remote": true
-		}
+		},
 	],
 	"r2_buckets": [
 		{
