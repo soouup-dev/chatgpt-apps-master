@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
-const FULL_URL = "https://ecommerce-server.soouup.workers.dev";
+const FULL_URL = "https://storyboard-server.soouup.workers.dev";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
