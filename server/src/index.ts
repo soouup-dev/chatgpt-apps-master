@@ -17,13 +17,13 @@ type AuthProps = {
 const privateHandler = {
 	async fetch(request, env, ctx) {
 		const props = ctx.props as AuthProps;
-		const WIDGET_URI = 'ui://ecommerce-widget';
+		const WIDGET_URI = 'ui://storyboard-widget';
 		const server = new McpServer({
-			name: 'Ecommerce App',
+			name: 'Storyboard App',
 			version: '1.0',
 		});
 
-		registerAppResource(server, 'Ecommerce Widget', WIDGET_URI, { description: 'Ecommerce Widget' }, async () => {
+		registerAppResource(server, 'Storyboard Widget', WIDGET_URI, { description: 'Storyboard Widget' }, async () => {
 			const html = await env.ASSETS.fetch(new URL('http://hello/index.html'));
 			return {
 				contents: [
