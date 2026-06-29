@@ -115,8 +115,6 @@ export async function createStoryboardProject(
   await db.insert(storyboardProjects).values({
     id,
     ...data,
-    colorPalette: JSON.stringify(data.colorPalette) as any,
-    typography: JSON.stringify(data.typography) as any,
   });
   return id;
 }
