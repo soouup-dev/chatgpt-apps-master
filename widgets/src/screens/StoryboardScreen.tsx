@@ -13,27 +13,27 @@ type Props = {
 
 export function StoryboardScreen({ project, scenes, onNavigate }: Props) {
   return (
-    <div className="min-h-screen bg-black text-neutral-100">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <div className="max-w-3xl mx-auto p-5 flex flex-col gap-6">
 
         {/* 헤더 */}
-        <header className="flex flex-col gap-1 border-b border-white/10 pb-4">
+        <header className="flex flex-col gap-1 border-b border-[var(--border)] pb-4">
           <button
             onClick={() => onNavigate('storyboard-projects')}
-            className="text-sm text-white/40 hover:text-white/60 w-fit mb-2"
+            className="text-sm text-[var(--foreground-secondary)] hover:text-[var(--foreground)] w-fit mb-2"
           >
             ← 목록으로
           </button>
           <h1 className="text-xl font-semibold">{project.projectName}</h1>
-          <p className="text-sm text-white/60">{project.clientName}</p>
+          <p className="text-sm text-[var(--foreground-secondary)]">{project.clientName}</p>
           <div className="flex gap-3 mt-1">
-            <span className="text-xs px-2 py-1 rounded-full bg-neutral-800 text-white/60">
+            <span className="text-xs px-2 py-1 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
               {project.duration}초
             </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-neutral-800 text-white/60">
+            <span className="text-xs px-2 py-1 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
               {project.mood}
             </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-neutral-800 text-white/60">
+            <span className="text-xs px-2 py-1 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
               {project.typography.font} · {project.typography.style}
             </span>
           </div>
@@ -41,13 +41,13 @@ export function StoryboardScreen({ project, scenes, onNavigate }: Props) {
 
         {/* 컬러 팔레트 */}
         <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-medium text-white/40">컬러 팔레트</h2>
+          <h2 className="text-sm font-medium text-[var(--foreground-secondary)]">컬러 팔레트</h2>
           <ColorPalette colors={project.colorPalette} />
         </section>
 
         {/* 씬 목록 */}
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-medium text-white/40">씬 구성</h2>
+          <h2 className="text-sm font-medium text-[var(--foreground-secondary)]">씬 구성</h2>
           {scenes.map((scene) => (
             <SceneCard key={scene.id} scene={scene} />
           ))}

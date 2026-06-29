@@ -23,31 +23,31 @@ export function ProjectsScreen({ app, projects, onSelectProject }: Props) {
     }
   };
   return (
-    <div className="min-h-screen bg-black text-neutral-100">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <div className="max-w-3xl mx-auto p-5 flex flex-col gap-4">
 
-        <header className="border-b border-white/10 pb-4">
+        <header className="border-b border-[var(--border)] pb-4">
           <h1 className="text-xl font-semibold">스토리보드 프로젝트</h1>
-          <p className="text-sm text-white/40 mt-1">{projects.length}개의 프로젝트</p>
+          <p className="text-sm text-[var(--foreground-secondary)] mt-1">{projects.length}개의 프로젝트</p>
         </header>
 
         {projects.length === 0 ? (
-          <p className="text-white/40 text-sm">아직 프로젝트가 없어요.</p>
+          <p className="text-[var(--foreground-secondary)] text-sm">아직 프로젝트가 없어요.</p>
         ) : (
           <div className="flex flex-col gap-3">
             {projects.map((project) => (
               <button
                 key={project.id}
                 onClick={() => handleSelect(project)}
-                className="text-left p-4 rounded-2xl border border-white/10 bg-neutral-900 hover:bg-neutral-800 transition-colors"
+                className="text-left p-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-secondary)] transition-colors"
               >
-                <p className="font-medium text-neutral-100">{project.projectName}</p>
-                <p className="text-sm text-white/60 mt-0.5">{project.clientName}</p>
+                <p className="font-medium text-[var(--foreground)]">{project.projectName}</p>
+                <p className="text-sm text-[var(--foreground-secondary)] mt-0.5">{project.clientName}</p>
                 <div className="flex gap-2 mt-2">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-800 text-white/40">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
                     {project.duration}초
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-800 text-white/40">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
                     {project.mood}
                   </span>
                 </div>
