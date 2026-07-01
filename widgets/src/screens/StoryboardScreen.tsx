@@ -9,45 +9,59 @@ type Props = {
   project: StoryboardProject;
   scenes: StoryboardScene[];
   onNavigate: (view: View) => void;
+  onBackToList: () => void;
 };
 
-export function StoryboardScreen({ project, scenes, onNavigate }: Props) {
+export function StoryboardScreen({ project, scenes, onBackToList }: Props) {
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <div className="max-w-3xl mx-auto p-5 flex flex-col gap-6">
+      <div className="max-w-2xl mx-auto p-6 flex flex-col gap-8">
 
         {/* 헤더 */}
-        <header className="flex flex-col gap-1 border-b border-[var(--border)] pb-4">
+        <header className="flex flex-col gap-4">
           <button
-            onClick={() => onNavigate('storyboard-projects')}
-            className="text-sm text-[var(--foreground-secondary)] hover:text-[var(--foreground)] w-fit mb-2"
+            onClick={onBackToList}
+            className="flex items-center gap-1.5 text-xs text-[var(--foreground-tertiary)] hover:text-[var(--foreground-secondary)] w-fit transition-colors"
           >
-            ← 목록으로
+            <span>←</span>
+            <span>프로젝트 목록</span>
           </button>
-          <h1 className="text-xl font-semibold">{project.projectName}</h1>
-          <p className="text-sm text-[var(--foreground-secondary)]">{project.clientName}</p>
-          <div className="flex gap-3 mt-1">
-            <span className="text-xs px-2 py-1 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
-              {project.duration}초
+
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-medium uppercase tracking-widest text-[var(--foreground-tertiary)]">
+              {project.clientName}
+            </p>
+            <h1 className="text-2xl font-semibold tracking-tight">{project.projectName}</h1>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs px-2.5 py-1 rounded-md bg-[var(--surface-secondary)] text-[var(--foreground-secondary)] font-mono">
+              {project.duration}s
             </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
+            <span className="text-xs px-2.5 py-1 rounded-md bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
               {project.mood}
             </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
+            <span className="text-xs px-2.5 py-1 rounded-md bg-[var(--surface-secondary)] text-[var(--foreground-secondary)]">
               {project.typography.font} · {project.typography.style}
             </span>
           </div>
         </header>
 
         {/* 컬러 팔레트 */}
-        <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-medium text-[var(--foreground-secondary)]">컬러 팔레트</h2>
+        <section className="flex flex-col gap-3">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--foreground-tertiary)]">
+            Color Palette
+          </p>
           <ColorPalette colors={project.colorPalette} />
         </section>
 
+        <div className="h-px bg-[var(--border)]" />
+
         {/* 씬 목록 */}
-        <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-medium text-[var(--foreground-secondary)]">씬 구성</h2>
+        <section className="flex flex-col gap-4">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--foreground-tertiary)]">
+            Scenes · {scenes.length}
+          </p>
           {scenes.map((scene) => (
             <SceneCard key={scene.id} scene={scene} />
           ))}

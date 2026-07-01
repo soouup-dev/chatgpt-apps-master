@@ -76,8 +76,7 @@ export default function App() {
   const { app, isConnected } = useApp({
     appInfo: { name: "ecommerce-widget", version: "1.0.0" },
     capabilities: {},
-    onAppCreated: (app) => {
-      app.ontoolresult = handleToolResult;
+    onAppCreated: (_app) => {
       if ((window as any).openai?.toolOutput) {
         handleToolResult({
           structuredContent: (window as any).openai.toolOutput,
@@ -85,6 +84,11 @@ export default function App() {
       }
     },
   });
+
+  useEffect(() => {
+    if (!app) return;
+    app.ontoolresult = handleToolResult;
+  }, [app, handleToolResult]);
 
   useEffect(() => {
     if (!app) return;
@@ -182,17 +186,30 @@ export default function App() {
           setSelectedStoryboard({ project, scenes });
           setView("storyboard");
         }}
+        onDeleteProject={(projectId) => {
+          setStoryboardProjects(prev => prev.filter(p => p.id !== projectId));
+        }}
       />
     );
   }
 
   if (view === "storyboard" && selectedStoryboard) {
+    const handleBackToList = async () => {
+      if (app) {
+        const result = await app.callServerTool({ name: 'get-storyboard-projects', arguments: {} });
+        if (!result.isError && result.structuredContent) {
+          setStoryboardProjects((result.structuredContent as any).projects ?? []);
+        }
+      }
+      setView("storyboard-projects");
+    };
     return (
       <StoryboardScreen
         app={app}
         project={selectedStoryboard.project}
         scenes={selectedStoryboard.scenes}
         onNavigate={setView}
+        onBackToList={handleBackToList}
       />
     );
   }

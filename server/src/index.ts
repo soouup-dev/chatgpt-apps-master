@@ -90,6 +90,7 @@ const privateHandler = {
 						bgColor: z.string(),
 						transition: z.string(),
 						bgmDirection: z.string(),
+						imagePrompt: z.string().describe('이 씬의 이미지 생성용 영어 프롬프트. 씬 분위기, 피사체, 카메라 구도, 조명만 구체적으로 묘사할 것. 절대로 텍스트, 문구, 자막, 로고, 카피 문장을 이미지에 넣으라는 지시를 포함하지 말 것 (AI 이미지 모델은 텍스트를 그림으로 그리면 항상 깨진 글자가 나옴). 예: "close-up of woman walking in golden hour light, shallow depth of field, cinematic"'),
 					})).describe('씬 목록'),
 				},
 				annotations: { readOnlyHint: false },
@@ -113,11 +114,28 @@ const privateHandler = {
 
 					// 씬 설명으로 이미지 생성
 					try {
-						const prompt = `cinematic video storyboard scene: ${scene.description}. Camera: ${scene.cameraMovement}. Mood: ${mood}. Style: elegant, high quality, film still.`;
-						const imageResponse = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', {
-							prompt,
-							num_steps: 4,
-						}) as { image: string };
+						// GPT가 imagePrompt에 텍스트 오버레이 지시를 넣는 경우, 해당 구절을 제거
+						const cleanedPrompt = scene.imagePrompt
+							.split(/[,.]/)
+							.filter((part) => !/\btext\b|\bwords?\b|\bcopy\b|\bslogan\b|\btitle\b|\bcaption\b|\bsubtitle\b|\blogo\b|\btypograph/i.test(part))
+							.join(', ');
+						const prompt = `${cleanedPrompt}, no text, no watermark, no subtitles, no letters, no logo, photorealistic film still, 16:9 widescreen`;
+
+						// Workers AI가 rate limit에 걸릴 수 있어 실패 시 짧은 대기 후 1회 재시도
+						let imageResponse: { image: string } | undefined;
+						for (let attempt = 0; attempt < 2; attempt++) {
+							try {
+								imageResponse = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', {
+									prompt,
+									num_steps: 4,
+								}) as { image: string };
+								break;
+							} catch (err) {
+								if (attempt === 1) throw err;
+								await new Promise((resolve) => setTimeout(resolve, 1500));
+							}
+						}
+						if (!imageResponse) throw new Error('image generation failed');
 
 						// base64 → binary → R2 저장
 						const imageBuffer = Uint8Array.from(atob(imageResponse.image), c => c.charCodeAt(0));
@@ -155,7 +173,7 @@ const privateHandler = {
 			'get-storyboard-projects',
 			{
 				title: 'Get Storyboard Projects',
-				description: '내 스토리보드 프로젝트 목록을 위젯에 표시합니다.',
+				description: '내 스토리보드 프로젝트 목록을 위젯에 표시합니다. 항상 이 tool을 호출해 최신 데이터를 가져오세요. 기억이나 이전 대화로 답하지 마세요.',
 				inputSchema: {},
 				annotations: { readOnlyHint: true },
 				_meta: {

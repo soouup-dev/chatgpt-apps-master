@@ -4,14 +4,16 @@ type Props = {
 
 export function ColorPalette({ colors }: Props) {
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-2">
       {colors.map((color) => (
-        <div key={color} className="flex flex-col items-center gap-1">
+        <div key={color} className="flex flex-col items-center gap-1.5">
           <div
-            className="w-10 h-10 rounded-full border border-white/10"
+            className="w-8 h-8 rounded-lg shadow-sm"
             style={{ backgroundColor: color }}
           />
-          <span className="text-xs text-white/60">{color}</span>
+          <span className="text-[10px] font-mono text-[var(--foreground-tertiary)] tracking-wide">
+            {color.toUpperCase()}
+          </span>
         </div>
       ))}
     </div>
