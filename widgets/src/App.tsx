@@ -5,21 +5,30 @@ import {
   useApp,
 } from "@modelcontextprotocol/ext-apps/react";
 import { LoadingIndicator } from "@openai/apps-sdk-ui/components/Indicator";
-import type { Product, CartItem, Order, Review } from "./types";
+import type { Product, CartItem, Order, Review, StoryboardScene, StoryboardProject } from "./types";
 import { ProductsScreen } from "./screens/ProductsScreen";
 import { ProductDetailScreen } from "./screens/ProductDetailScreen";
 import { CartScreen } from "./screens/CartScreen";
 import { CheckoutCompleteScreen } from "./screens/CheckoutCompleteScreen";
+import { ProjectsScreen } from "./screens/ProjectsScreen";
+import { StoryboardScreen } from "./screens/StoryboardScreen";
 
 export type View =
   | "loading"
   | "products"
   | "product"
   | "cart"
-  | "checkout-complete";
+  | "checkout-complete"
+  | "storyboard-projects"
+  | "storyboard";
 
 export default function App() {
   const [view, setView] = useState<View>("loading");
+  const [storyboardProjects, setStoryboardProjects] = useState<StoryboardProject[]>([]);
+  const [selectedStoryboard, setSelectedStoryboard] = useState<{
+    project: StoryboardProject;
+    scenes: StoryboardScene[];
+  } | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -50,6 +59,15 @@ export default function App() {
       } else if ("cartItems" in structuredContent) {
         setCart(structuredContent.cartItems!);
         setView("cart");
+      } else if ("projects" in structuredContent) {
+        setStoryboardProjects(structuredContent.projects as StoryboardProject[]);
+        setView("storyboard-projects");
+      } else if ("project" in structuredContent && "scenes" in structuredContent) {
+        setSelectedStoryboard({
+          project: structuredContent.project as StoryboardProject,
+          scenes: structuredContent.scenes as StoryboardScene[],
+        });
+        setView("storyboard");
       }
     },
     [],
@@ -58,8 +76,7 @@ export default function App() {
   const { app, isConnected } = useApp({
     appInfo: { name: "ecommerce-widget", version: "1.0.0" },
     capabilities: {},
-    onAppCreated: (app) => {
-      app.ontoolresult = handleToolResult;
+    onAppCreated: (_app) => {
       if ((window as any).openai?.toolOutput) {
         handleToolResult({
           structuredContent: (window as any).openai.toolOutput,
@@ -67,6 +84,11 @@ export default function App() {
       }
     },
   });
+
+  useEffect(() => {
+    if (!app) return;
+    app.ontoolresult = handleToolResult;
+  }, [app, handleToolResult]);
 
   useEffect(() => {
     if (!app) return;
@@ -151,6 +173,43 @@ export default function App() {
           setView("product");
         }}
         onNavigate={setView}
+      />
+    );
+  }
+
+  if (view === "storyboard-projects") {
+    return (
+      <ProjectsScreen
+        app={app}
+        projects={storyboardProjects}
+        onSelectProject={(project, scenes) => {
+          setSelectedStoryboard({ project, scenes });
+          setView("storyboard");
+        }}
+        onDeleteProject={(projectId) => {
+          setStoryboardProjects(prev => prev.filter(p => p.id !== projectId));
+        }}
+      />
+    );
+  }
+
+  if (view === "storyboard" && selectedStoryboard) {
+    const handleBackToList = async () => {
+      if (app) {
+        const result = await app.callServerTool({ name: 'get-storyboard-projects', arguments: {} });
+        if (!result.isError && result.structuredContent) {
+          setStoryboardProjects((result.structuredContent as any).projects ?? []);
+        }
+      }
+      setView("storyboard-projects");
+    };
+    return (
+      <StoryboardScreen
+        app={app}
+        project={selectedStoryboard.project}
+        scenes={selectedStoryboard.scenes}
+        onNavigate={setView}
+        onBackToList={handleBackToList}
       />
     );
   }

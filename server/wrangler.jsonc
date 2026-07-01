@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "server",
+	"name": "storyboard-server",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-04-10",
 	"observability": {
@@ -26,13 +26,20 @@
 			"remote": true,
 			"migrations_dir": "drizzle",
 		},
+		{
+			"binding": "STORYBOARD_DB",
+			"database_name": "storyboard-database",
+			"database_id": "5ada086a-62f2-4adc-9a65-53921ae03727",
+			"remote": true,
+			"migrations_dir": "drizzle",
+		},
 	],
 	"kv_namespaces": [
 		{
 			"binding": "OAUTH_KV",
-			"id": "7fc90f73fae3443fa3009bf8ba852bd9",
+			"id": "cee69e3667044861a0ed6e88e5b8a924",
 			"remote": true
-		}
+		},
 	],
 	"r2_buckets": [
 		{
@@ -41,6 +48,9 @@
 			"remote": true
 		}
 	],
+	"ai": {
+		"binding": "AI"
+	},
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

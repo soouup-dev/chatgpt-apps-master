@@ -35,3 +35,31 @@ export type Review = {
   fileId: string;
   createdAt: string | null;
 };
+
+export type StoryboardProject = {
+  id: string;
+  userId: string;
+  clientName: string;
+  projectName: string;
+  requirements: string;
+  duration: number;
+  mood: string;
+  colorPalette: string[];
+  typography: { font: string; style: string };
+  createdAt: string | null;
+};
+
+export type StoryboardScene = {
+  id: string;
+  projectId: string;
+  sceneNumber: number;
+  startTime: number;
+  endTime: number;
+  description: string;
+  cameraMovement: string;
+  copyText: string;
+  bgColor: string;
+  transition: string;
+  bgmDirection: string;
+  imageUrl: string | null;
+}
